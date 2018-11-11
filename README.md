@@ -1,1 +1,2 @@
-# Trigger_Motor_Project
+# Trigger Motor Project
+(In development)
