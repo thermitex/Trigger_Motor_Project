@@ -21,6 +21,8 @@ For details refer to complete guide.
 #include <stdlib.h>
 /* ============================== */
 
+#define ANGLE_CALIBRATION 10
+
 /* ========== can bus ========== */
 CAN_HandleTypeDef hcan1;
 /* ============================= */
@@ -51,6 +53,7 @@ CAN_FilterTypeDef can1Filter;
 uint8_t canTxMsg0[8] = {0};
 uint8_t canTxMsg1[8] = {0};
 uint32_t can_count=0;
+uint32_t trigger_count=1;
 /* ============================= */
 
 /* ========== CAN initialize functions ========== */
@@ -137,35 +140,35 @@ void CanReceiveMsgProcess(CAN_RxHeaderTypeDef *rxHeader,uint8_t* msg)
 	can_count++;
 		switch(rxHeader->StdId)
 		{
-				case CAN_BUS2_MOTOR1_FEEDBACK_MSG_ID:
-				{
-					(can_count<=50) ? GetEncoderBias(&CM1Encoder ,rxHeader,msg):EncoderProcess(&CM1Encoder ,msg);					
-				}break;
-				case CAN_BUS2_MOTOR2_FEEDBACK_MSG_ID:
-				{
-					(can_count<=50) ? GetEncoderBias(&CM2Encoder ,rxHeader,msg):EncoderProcess(&CM2Encoder ,msg);
-				}break;
-				case CAN_BUS2_MOTOR3_FEEDBACK_MSG_ID:
-				{
-					(can_count<=50) ? GetEncoderBias(&CM3Encoder ,rxHeader,msg):EncoderProcess(&CM3Encoder ,msg);
-				}break;
-				case CAN_BUS2_MOTOR4_FEEDBACK_MSG_ID:
-				{
-					(can_count<=50) ? GetEncoderBias(&CM4Encoder ,rxHeader,msg):EncoderProcess(&CM4Encoder ,msg);
-				}break;
-				case CAN_BUS2_MOTOR5_FEEDBACK_MSG_ID:
-				{
-				}break;
-				
-				case CAN_BUS2_MOTOR6_FEEDBACK_MSG_ID:
-				{	
-				}break;		
-				case CAN_BUS2_MOTOR7_FEEDBACK_MSG_ID:
-				{
-				}break;
-				case CAN_BUS2_MOTOR8_FEEDBACK_MSG_ID:
-				{
-				}break;
+			case CAN_BUS2_MOTOR1_FEEDBACK_MSG_ID:
+			{
+				(can_count<=50) ? GetEncoderBias(&CM1Encoder ,rxHeader,msg):EncoderProcess(&CM1Encoder ,msg);					
+			}break;
+			case CAN_BUS2_MOTOR2_FEEDBACK_MSG_ID:
+			{
+				(can_count<=50) ? GetEncoderBias(&CM2Encoder ,rxHeader,msg):EncoderProcess(&CM2Encoder ,msg);
+			}break;
+			case CAN_BUS2_MOTOR3_FEEDBACK_MSG_ID:
+			{
+				(can_count<=50) ? GetEncoderBias(&CM3Encoder ,rxHeader,msg):EncoderProcess(&CM3Encoder ,msg);
+			}break;
+			case CAN_BUS2_MOTOR4_FEEDBACK_MSG_ID:
+			{
+				(can_count<=50) ? GetEncoderBias(&CM4Encoder ,rxHeader,msg):EncoderProcess(&CM4Encoder ,msg);
+			}break;
+			case CAN_BUS2_MOTOR5_FEEDBACK_MSG_ID:
+			{
+			}break;
+			
+			case CAN_BUS2_MOTOR6_FEEDBACK_MSG_ID:
+			{	
+			}break;		
+			case CAN_BUS2_MOTOR7_FEEDBACK_MSG_ID:
+			{
+			}break;
+			case CAN_BUS2_MOTOR8_FEEDBACK_MSG_ID:
+			{
+			}break;
 				
 		}
 
@@ -356,11 +359,10 @@ void EncoderProcess(volatile Encoder *v, uint8_t* msg)
 }
 void GetEncoderBias(volatile Encoder *v,CAN_RxHeaderTypeDef *rxHeader,uint8_t* msg)
 {
-
-            v->ecd_bias = (msg[0]<<8)|msg[1]; 
-            v->ecd_value = v->ecd_bias;
-            v->last_raw_value = v->ecd_bias;
-            v->temp_count++;
+	v->ecd_bias = (msg[0]<<8)|msg[1]; 
+	v->ecd_value = v->ecd_bias;
+	v->last_raw_value = v->ecd_bias;
+	v->temp_count++;
 }
 void PID_Reset(PID_Regulator_t *pid)
 {
@@ -370,7 +372,7 @@ void PID_Reset(PID_Regulator_t *pid)
 }
 void send_Chassis_Msg(Can* chassis, int16_t cm1_iq,int16_t cm2_iq,int16_t cm3_iq,int16_t cm4_iq)
 {
-		uint8_t canTxMsg0[8];
+	uint8_t canTxMsg0[8];
     canTxMsg0[0] = (uint8_t)(cm1_iq >> 8);
     canTxMsg0[1] = (uint8_t)cm1_iq;
     canTxMsg0[2] = (uint8_t)(cm2_iq >> 8);
@@ -388,18 +390,33 @@ void set_Chassis_Pid_Speed(Can chassis, int cm1, int cm2, int cm3, int cm4)
 	CM2SpeedPID.ref = cm2;
 	CM3SpeedPID.ref = cm3;
 	CM4SpeedPID.ref = cm4;
-  CM1SpeedPID.fdb = CM1Encoder.filter_rate;
+    CM1SpeedPID.fdb = CM1Encoder.filter_rate;
 	CM2SpeedPID.fdb = CM2Encoder.filter_rate;
 	CM3SpeedPID.fdb = CM3Encoder.filter_rate;
 	CM4SpeedPID.fdb = CM4Encoder.filter_rate;
-  PID_Calc(&CM1SpeedPID);
+    PID_Calc(&CM1SpeedPID);
 	PID_Calc(&CM2SpeedPID);
 	PID_Calc(&CM3SpeedPID);
 	PID_Calc(&CM4SpeedPID);
 	send_Chassis_Msg(&chassis, CM1SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM2SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM3SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM4SpeedPID.output*SPEED_OUTPUT_ATTENUATION);	// hold motor please :)
 }
 
-void set_Trigger_Motor_Pid_Speed(Can motor, int cm1){
+void set_Trigger_Motor_Pid_Speed(Can motor, int cm1, float target){
 	//the implement is the same as chassis
-	set_Chassis_Pid_Speed(motor, cm1, 0, 0, 0);
+	float real_angle;
+	if (CM1Encoder.ecd_angle < 0){
+		real_angle = CM1Encoder.ecd_angle + 360;
+	} else {
+		real_angle = CM1Encoder.ecd_angle;
+	}
+	real_angle -= ANGLE_CALIBRATION;
+	if (real_angle > trigger_count * target){
+		set_Chassis_Pid_Speed(motor, 0, 0, 0, 0);
+	} else {
+		set_Chassis_Pid_Speed(motor, cm1, 0, 0, 0);
+	}
+}
+
+void Next_Angle(void){
+	trigger_count++;
 }
