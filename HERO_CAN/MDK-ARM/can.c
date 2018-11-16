@@ -54,6 +54,7 @@ uint8_t canTxMsg0[8] = {0};
 uint8_t canTxMsg1[8] = {0};
 uint32_t can_count=0;
 uint32_t trigger_count=1;
+float real_angle;
 /* ============================= */
 
 /* ========== CAN initialize functions ========== */
@@ -344,6 +345,7 @@ void EncoderProcess(volatile Encoder *v, uint8_t* msg)
 	
 	//v->ecd_angle = (float)(v->raw_value - v->ecd_bias)*360/8192 + v->round_cnt * 360;
 	v->ecd_angle = (float)(v->raw_value - v->ecd_bias)*360/8192.0f;
+
 	v->rate_buf[v->buf_count++] = v->ecd_raw_rate;
 	if(v->buf_count == RATE_BUF_SIZE)
 	{
@@ -401,19 +403,31 @@ void set_Chassis_Pid_Speed(Can chassis, int cm1, int cm2, int cm3, int cm4)
 	send_Chassis_Msg(&chassis, CM1SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM2SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM3SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM4SpeedPID.output*SPEED_OUTPUT_ATTENUATION);	// hold motor please :)
 }
 
-void set_Trigger_Motor_Pid_Speed(Can motor, int cm1, float target){
-	//the implement is the same as chassis
-	float real_angle;
+void set_Trigger_Motor_Pid_Speed(Can motor, int cm1, float offset){
+
+	//=========Calculating Angle Difference==========
 	if (CM1Encoder.ecd_angle < 0){
 		real_angle = CM1Encoder.ecd_angle + 360;
 	} else {
 		real_angle = CM1Encoder.ecd_angle;
 	}
 	real_angle -= ANGLE_CALIBRATION;
-	if (real_angle > trigger_count * target){
+	//===============================================
+
+	/* Old implementation 
+	if (real_angle > offset){
 		set_Chassis_Pid_Speed(motor, 0, 0, 0, 0);
 	} else {
 		set_Chassis_Pid_Speed(motor, cm1, 0, 0, 0);
+	}
+	*/
+
+	if (real_angle == offset){
+        set_Chassis_Pid_Speed(motor, 0, 0, 0, 0);
+    } else if(real_angle < offset){
+        set_Chassis_Pid_Speed(motor, cm1, 0, 0, 0);
+    } else if(real_angle > offset){
+		set_Chassis_Pid_Speed(motor, -cm1, 0, 0, 0);
 	}
 }
 
