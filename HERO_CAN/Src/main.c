@@ -133,7 +133,7 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-    set_Trigger_Motor_Pid_Speed(trigger_motor, 300, 360/8);
+    Trigger_Motor_Controlled_Rotation(trigger_motor, 300, 1400);
   }
   /* USER CODE END 3 */
 

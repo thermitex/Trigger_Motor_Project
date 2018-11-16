@@ -21,8 +21,6 @@ For details refer to complete guide.
 #include <stdlib.h>
 /* ============================== */
 
-#define ANGLE_CALIBRATION 10
-
 /* ========== can bus ========== */
 CAN_HandleTypeDef hcan1;
 /* ============================= */
@@ -36,6 +34,7 @@ PID_Regulator_t CM1SpeedPID = CHASSIS_MOTOR_SPEED_PID_DEFAULT;
 PID_Regulator_t CM2SpeedPID = CHASSIS_MOTOR_SPEED_PID_DEFAULT;
 PID_Regulator_t CM3SpeedPID = CHASSIS_MOTOR_SPEED_PID_DEFAULT;
 PID_Regulator_t CM4SpeedPID = CHASSIS_MOTOR_SPEED_PID_DEFAULT;
+PID_Regulator_t TMSpeedPID = TRIGGER_MOTOR_POSITION_PID_DEFAULT;
 //---//
 
 /* ========== headers ========== */
@@ -53,8 +52,14 @@ CAN_FilterTypeDef can1Filter;
 uint8_t canTxMsg0[8] = {0};
 uint8_t canTxMsg1[8] = {0};
 uint32_t can_count=0;
-uint32_t trigger_count=1;
-float real_angle;
+/* ============================= */
+
+/* ========== trigger motor global vars ========== */
+uint32_t trigger_count = 1; //times of trigger motor rotation is called
+float real_angle = 0; //in the current cycle, the angle of the encoder
+float last_real_angle = 0; //used for comparison to decide if a cycle is completed
+float acc_angle = 0; //the accumulated angle the encoder has rotated from the beginning
+uint32_t cycle = 0; //the number of cycles the encoder has rotated
 /* ============================= */
 
 /* ========== CAN initialize functions ========== */
@@ -309,7 +314,7 @@ void PID_Calc(PID_Regulator_t *pid)
 	pid->output = pid->KpComponent + pid->KiComponent+ pid->KdComponent;
 	
 	//output value limit
-	if((pid->output) > pid->output_limit)
+	if((pid->output) > pid->output_limit || -(pid->output) > pid->output_limit)
 		(pid->output>0) ? (pid->output=pid->output_limit) : (pid->output = -pid->output_limit);
 }
 void EncoderProcess(volatile Encoder *v, uint8_t* msg)
@@ -402,35 +407,63 @@ void set_Chassis_Pid_Speed(Can chassis, int cm1, int cm2, int cm3, int cm4)
 	PID_Calc(&CM4SpeedPID);
 	send_Chassis_Msg(&chassis, CM1SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM2SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM3SpeedPID.output*SPEED_OUTPUT_ATTENUATION,CM4SpeedPID.output*SPEED_OUTPUT_ATTENUATION);	// hold motor please :)
 }
+/* ============================================== */
+//
+//
+//
+//
+//
+//
+/* Stuff below this line is for trigger motor */
+//
+//
+//
+//
+//
+//
+/* ========== Trigger Motor PID ========== */
+void set_Trigger_Pid_Speed(Can tm, float current_pos, float expected_pos)
+{
+	HAL_Delay(1);
+	TMSpeedPID.ref = expected_pos;
+    TMSpeedPID.fdb = current_pos;
+    PID_Calc(&TMSpeedPID);
+	//send_Chassis_Msg(&tm, TMSpeedPID.output,0,0,0);
+	set_Chassis_Pid_Speed(tm, TMSpeedPID.output, 0, 0, 0); //double PID
+}
 
-void set_Trigger_Motor_Pid_Speed(Can motor, int cm1, float offset){
-
-	//=========Calculating Angle Difference==========
+/* ========== Trigger Motor Main Func ========== */
+void Trigger_Motor_Controlled_Rotation(Can motor, int cm1, float offset){
+	
+	//=========Calculating Accumulated Angle==========
+	last_real_angle = real_angle;
 	if (CM1Encoder.ecd_angle < 0){
 		real_angle = CM1Encoder.ecd_angle + 360;
 	} else {
 		real_angle = CM1Encoder.ecd_angle;
 	}
-	real_angle -= ANGLE_CALIBRATION;
+	if ((last_real_angle - real_angle > 200) || (last_real_angle - real_angle < -200))
+		cycle += 1;
+	acc_angle = cycle * 360 + real_angle;
 	//===============================================
 
-	/* Old implementation 
-	if (real_angle > offset){
+	//===============================================
+	//Below is the approach used at the very beginning.
+	//If the motor does not rotate, uncomment the following code to debug the error.
+	/*if (real_angle > offset){
 		set_Chassis_Pid_Speed(motor, 0, 0, 0, 0);
 	} else {
 		set_Chassis_Pid_Speed(motor, cm1, 0, 0, 0);
-	}
-	*/
+	}*/
+	//===============================================
 
-	if (real_angle == offset){
-        set_Chassis_Pid_Speed(motor, 0, 0, 0, 0);
-    } else if(real_angle < offset){
-        set_Chassis_Pid_Speed(motor, cm1, 0, 0, 0);
-    } else if(real_angle > offset){
-		set_Chassis_Pid_Speed(motor, -cm1, 0, 0, 0);
-	}
+	//=======Make the motor stop at the angle========
+	set_Trigger_Pid_Speed(motor, acc_angle, trigger_count * offset);
+	//===============================================
+
 }
 
+/* ========== For Sequential Controlled Rotations ========== */
 void Next_Angle(void){
 	trigger_count++;
 }

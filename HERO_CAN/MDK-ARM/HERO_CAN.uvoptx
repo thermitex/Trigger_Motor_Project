@@ -120,7 +120,6 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>¸!ð	ã"‹w¸!ð	ã"‹w¸!ð	</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -179,6 +178,36 @@
           <count>4</count>
           <WinNumber>1</WinNumber>
           <ItemText>trigger_count</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>TMSpeedPID</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>CM1Encoder.ecd_angle</ItemText>
+        </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>acc_angle</ItemText>
+        </Ww>
+        <Ww>
+          <count>8</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>cycle</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>last_real_angle</ItemText>
+        </Ww>
+        <Ww>
+          <count>10</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\HERO_CAN\can.c\real_angle</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

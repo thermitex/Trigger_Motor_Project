@@ -140,8 +140,28 @@ void PID_Reset(PID_Regulator_t *pid);
 	&PID_Reset,\
 }\
 
+#define TRIGGER_MOTOR_POSITION_PID_DEFAULT \
+{\
+	0,\
+	0,\
+	{0,0},\
+	0,\
+	0,\
+	0.2f,\
+	0.0f,\
+	0.1f,\
+	0,\
+	0,\
+	0,\
+	1000,\
+	0,\
+	800,\
+	&PID_Calc,\
+	&PID_Reset,\
+}\
+
 void set_Chassis_Pid_Speed(Can chassis, int cm1, int cm2, int cm3, int cm4);
-void set_Trigger_Motor_Pid_Speed(Can motor, int cm1, float offset);
+void Trigger_Motor_Controlled_Rotation(Can motor, int cm1, float offset);
 void GetEncoderBias(volatile Encoder *v,CAN_RxHeaderTypeDef *rxHeader,uint8_t* msg);
 void EncoderProcess(volatile Encoder *v, uint8_t* msg);
 #endif

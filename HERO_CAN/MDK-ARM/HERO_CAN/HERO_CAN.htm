@@ -3,11 +3,11 @@
 <title>Static Call Graph - [HERO_CAN\HERO_CAN.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image HERO_CAN\HERO_CAN.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Nov 14 22:24:37 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Nov 16 22:59:58 2018
 <BR><P>
-<H3>Maximum Stack Usage =        316 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        404 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-main &rArr; set_Trigger_Motor_Pid_Speed &rArr; set_Chassis_Pid_Speed &rArr; send_Chassis_Msg &rArr; Can_Transmit &rArr; HAL_CAN_AddTxMessage
+main &rArr; set_Trigger_Motor_Pid_Speed &rArr; set_Trigger_Pid_Speed &rArr; set_Chassis_Pid_Speed &rArr; send_Chassis_Msg &rArr; Can_Transmit &rArr; HAL_CAN_AddTxMessage
 <P>
 <H3>
 Mutually Recursive functions
@@ -79,8 +79,8 @@ Function Pointers
  <LI><a href="#[56]">OTG_HS_EP1_OUT_IRQHandler</a> from startup_stm32f427xx.o(.text) referenced from startup_stm32f427xx.o(RESET)
  <LI><a href="#[59]">OTG_HS_IRQHandler</a> from startup_stm32f427xx.o(.text) referenced from startup_stm32f427xx.o(RESET)
  <LI><a href="#[58]">OTG_HS_WKUP_IRQHandler</a> from startup_stm32f427xx.o(.text) referenced from startup_stm32f427xx.o(RESET)
- <LI><a href="#[0]">PID_Calc</a> from can.o(i.PID_Calc) referenced 8 times from can.o(.data)
- <LI><a href="#[1]">PID_Reset</a> from can.o(i.PID_Reset) referenced 8 times from can.o(.data)
+ <LI><a href="#[0]">PID_Calc</a> from can.o(i.PID_Calc) referenced 10 times from can.o(.data)
+ <LI><a href="#[1]">PID_Reset</a> from can.o(i.PID_Reset) referenced 10 times from can.o(.data)
  <LI><a href="#[d]">PVD_IRQHandler</a> from startup_stm32f427xx.o(.text) referenced from startup_stm32f427xx.o(RESET)
  <LI><a href="#[a]">PendSV_Handler</a> from stm32f4xx_it.o(i.PendSV_Handler) referenced from startup_stm32f427xx.o(RESET)
  <LI><a href="#[11]">RCC_IRQHandler</a> from stm32f4xx_it.o(i.RCC_IRQHandler) referenced from startup_stm32f427xx.o(RESET)
@@ -133,7 +133,7 @@ Global Symbols
 <P><STRONG><a name="[66]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry.o(.ARM.Collect$$$$00000000))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f427xx.o(.text)
 </UL>
-<P><STRONG><a name="[c8]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry2.o(.ARM.Collect$$$$00000001))
+<P><STRONG><a name="[c9]"></a>_main_stk</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry2.o(.ARM.Collect$$$$00000001))
 
 <P><STRONG><a name="[67]"></a>_main_scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry5.o(.ARM.Collect$$$$00000004))
 <BR><BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
@@ -143,15 +143,15 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
 </UL>
 
-<P><STRONG><a name="[c9]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
+<P><STRONG><a name="[ca]"></a>_main_clock</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry7b.o(.ARM.Collect$$$$00000008))
 
-<P><STRONG><a name="[ca]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
+<P><STRONG><a name="[cb]"></a>_main_cpp_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry8b.o(.ARM.Collect$$$$0000000A))
 
-<P><STRONG><a name="[cb]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
+<P><STRONG><a name="[cc]"></a>_main_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry9a.o(.ARM.Collect$$$$0000000B))
 
-<P><STRONG><a name="[cc]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
+<P><STRONG><a name="[cd]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000D))
 
-<P><STRONG><a name="[cd]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
+<P><STRONG><a name="[ce]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$0000000F))
 
 <P><STRONG><a name="[2]"></a>Reset_Handler</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, startup_stm32f427xx.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f427xx.o(RESET)
@@ -424,23 +424,24 @@ Global Symbols
 
 <P><STRONG><a name="[79]"></a>__aeabi_memcpy4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memcpya.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Trigger_Pid_Speed
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Trigger_Motor_Pid_Speed
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can_Transmit
 </UL>
 
-<P><STRONG><a name="[ce]"></a>__aeabi_memcpy8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memcpya.o(.text), UNUSED)
+<P><STRONG><a name="[cf]"></a>__aeabi_memcpy8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memcpya.o(.text), UNUSED)
 
 <P><STRONG><a name="[6b]"></a>__aeabi_llsl</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, llshl.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 </UL>
 
-<P><STRONG><a name="[cf]"></a>_ll_shift_l</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
+<P><STRONG><a name="[d0]"></a>_ll_shift_l</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llshl.o(.text), UNUSED)
 
 <P><STRONG><a name="[6a]"></a>__aeabi_llsr</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, llushr.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
 </UL>
 
-<P><STRONG><a name="[d0]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
+<P><STRONG><a name="[d1]"></a>_ll_ushift_r</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, llushr.o(.text), UNUSED)
 
 <P><STRONG><a name="[68]"></a>__scatterload</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, init.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main_after_scatterload
@@ -448,11 +449,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_main_scatterload
 </UL>
 
-<P><STRONG><a name="[d1]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
+<P><STRONG><a name="[d2]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
 
-<P><STRONG><a name="[d2]"></a>__decompress</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
+<P><STRONG><a name="[d3]"></a>__decompress</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
 
-<P><STRONG><a name="[d3]"></a>__decompress1</STRONG> (Thumb, 86 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
+<P><STRONG><a name="[d4]"></a>__decompress1</STRONG> (Thumb, 86 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
 
 <P><STRONG><a name="[6]"></a>BusFault_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f4xx_it.o(i.BusFault_Handler))
 <BR><BR>[Calls]<UL><LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BusFault_Handler
@@ -673,7 +674,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Chassis_Pid_Speed
+<BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Trigger_Pid_Speed
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Chassis_Pid_Speed
 </UL>
 
 <P><STRONG><a name="[8e]"></a>HAL_GPIO_Init</STRONG> (Thumb, 408 bytes, Stack size 40 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_Init))
@@ -951,8 +953,9 @@ Global Symbols
 <P><STRONG><a name="[3]"></a>NMI_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f4xx_it.o(i.NMI_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f427xx.o(RESET)
 </UL>
-<P><STRONG><a name="[0]"></a>PID_Calc</STRONG> (Thumb, 116 bytes, Stack size 0 bytes, can.o(i.PID_Calc))
-<BR><BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Chassis_Pid_Speed
+<P><STRONG><a name="[0]"></a>PID_Calc</STRONG> (Thumb, 130 bytes, Stack size 0 bytes, can.o(i.PID_Calc))
+<BR><BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Trigger_Pid_Speed
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Chassis_Pid_Speed
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> can.o(.data)
 </UL>
@@ -1047,14 +1050,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;realloc
 </UL>
 
-<P><STRONG><a name="[d4]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
+<P><STRONG><a name="[d5]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
 
-<P><STRONG><a name="[d5]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
+<P><STRONG><a name="[d6]"></a>__scatterload_null</STRONG> (Thumb, 2 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_null), UNUSED)
 
-<P><STRONG><a name="[d6]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
+<P><STRONG><a name="[d7]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
 
 <P><STRONG><a name="[64]"></a>main</STRONG> (Thumb, 176 bytes, Stack size 104 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 316<LI>Call Chain = main &rArr; set_Trigger_Motor_Pid_Speed &rArr; set_Chassis_Pid_Speed &rArr; send_Chassis_Msg &rArr; Can_Transmit &rArr; HAL_CAN_AddTxMessage
+<BR><BR>[Stack]<UL><LI>Max Depth = 404<LI>Call Chain = main &rArr; set_Trigger_Motor_Pid_Speed &rArr; set_Trigger_Pid_Speed &rArr; set_Chassis_Pid_Speed &rArr; send_Chassis_Msg &rArr; Can_Transmit &rArr; HAL_CAN_AddTxMessage
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_PWM_Init
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_Base_Start_IT
@@ -1100,16 +1103,27 @@ Global Symbols
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send_Chassis_Msg
 <LI><a href="#[0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PID_Calc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Trigger_Motor_Pid_Speed
+<BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Trigger_Pid_Speed
 </UL>
 
-<P><STRONG><a name="[c4]"></a>set_Trigger_Motor_Pid_Speed</STRONG> (Thumb, 124 bytes, Stack size 80 bytes, can.o(i.set_Trigger_Motor_Pid_Speed))
-<BR><BR>[Stack]<UL><LI>Max Depth = 212<LI>Call Chain = set_Trigger_Motor_Pid_Speed &rArr; set_Chassis_Pid_Speed &rArr; send_Chassis_Msg &rArr; Can_Transmit &rArr; HAL_CAN_AddTxMessage
+<P><STRONG><a name="[c4]"></a>set_Trigger_Motor_Pid_Speed</STRONG> (Thumb, 166 bytes, Stack size 80 bytes, can.o(i.set_Trigger_Motor_Pid_Speed))
+<BR><BR>[Stack]<UL><LI>Max Depth = 300<LI>Call Chain = set_Trigger_Motor_Pid_Speed &rArr; set_Trigger_Pid_Speed &rArr; set_Chassis_Pid_Speed &rArr; send_Chassis_Msg &rArr; Can_Transmit &rArr; HAL_CAN_AddTxMessage
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Chassis_Pid_Speed
+<BR>[Calls]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Trigger_Pid_Speed
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[c8]"></a>set_Trigger_Pid_Speed</STRONG> (Thumb, 92 bytes, Stack size 88 bytes, can.o(i.set_Trigger_Pid_Speed))
+<BR><BR>[Stack]<UL><LI>Max Depth = 220<LI>Call Chain = set_Trigger_Pid_Speed &rArr; set_Chassis_Pid_Speed &rArr; send_Chassis_Msg &rArr; Can_Transmit &rArr; HAL_CAN_AddTxMessage
+</UL>
+<BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Chassis_Pid_Speed
+<LI><a href="#[0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PID_Calc
+<LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_Trigger_Motor_Pid_Speed
 </UL>
 <P>
 <H3>
