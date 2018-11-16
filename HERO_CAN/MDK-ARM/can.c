@@ -422,14 +422,14 @@ void set_Chassis_Pid_Speed(Can chassis, int cm1, int cm2, int cm3, int cm4)
 //
 //
 /* ========== Trigger Motor PID ========== */
-void set_Trigger_Pid_Speed(Can tm, float current_pos, float expected_pos)
+void set_Trigger_Pid_Position(Can motor, float current_pos, float expected_pos)
 {
 	HAL_Delay(1);
 	TMSpeedPID.ref = expected_pos;
     TMSpeedPID.fdb = current_pos;
     PID_Calc(&TMSpeedPID);
-	//send_Chassis_Msg(&tm, TMSpeedPID.output,0,0,0);
-	set_Chassis_Pid_Speed(tm, TMSpeedPID.output, 0, 0, 0); //double PID
+	//send_Chassis_Msg(&motor, TMSpeedPID.output,0,0,0);
+	set_Chassis_Pid_Speed(motor, TMSpeedPID.output, 0, 0, 0); //double PID
 }
 
 /* ========== Trigger Motor Main Func ========== */
@@ -458,7 +458,7 @@ void Trigger_Motor_Controlled_Rotation(Can motor, int cm1, float offset){
 	//===============================================
 
 	//=======Make the motor stop at the angle========
-	set_Trigger_Pid_Speed(motor, acc_angle, trigger_count * offset);
+	set_Trigger_Pid_Position(motor, acc_angle, trigger_count * offset);
 	//===============================================
 
 }
